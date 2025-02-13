@@ -1,32 +1,31 @@
 SELECT
-	-- TO_CHAR(supplier_contract_amount_usd, '999,999,999,999.99') as supplier_contract_amount_formatted,
-	"Project ID",
-	"Associated Project",
-	-- "Region",
-	-- "Country",
-	"Project Status",
-	"Last Stage Reached Name",
-	"Project Name",
-	"Project Development Objective ",
-	"Implementing Agency",
-	TO_CHAR("Public Disclosure Date", 'YYYY-MM-DD') AS "Public Disclosure Date",
-	TO_CHAR("Board Approval Date", 'YYYY-MM-DD') AS "Board Approval Date",
-	TO_CHAR("Loan Effective Date", 'YYYY-MM-DD') AS "Loan Effective Date",
-	TO_CHAR("Project Closing Date", 'YYYY-MM-DD') AS "Project Closing Date",
-	NULLIF(TO_CHAR("Current Project Cost", '999,999,999,999.99'), '') AS "Current Project Cost",
-	NULLIF(TO_CHAR("IBRD Commitment", '999,999,999,999.99'), '') AS "IBRD Commitment",
-	NULLIF(TO_CHAR("IDA Commitment", '999,999,999,999.99'), '') AS "IDA Commitment",
-	NULLIF(TO_CHAR("Grant Amount", '999,999,999,999.99'), '') AS "Grant Amount",
-	NULLIF(TO_CHAR("Total IBRD, IDA and Grant Commitment", '999,999,999,999.99'), '') AS "Total IBRD, IDA and Grant Commitment",
-	"Borrower",
-	"Lending Instrument",
-	"Environmental Assessment Category",
-	"Environmental and Social Risk",
-	"Consultant Services Required",
-	"Financing Type"
+	project_id,
+	associated_project,
+	-- region,
+	-- country,
+	project_status,
+	last_stage_reached_name,
+	project_name,
+	project_development_objective ,
+	implementing_agency,
+	TO_CHAR(public_disclosure_date, 'YYYY-MM-DD') AS public_disclosure_date,
+	TO_CHAR(board_approval_date, 'YYYY-MM-DD') AS board_approval_date,
+	TO_CHAR(loan_effective_date, 'YYYY-MM-DD') AS loan_effective_date,
+	TO_CHAR(project_closing_date, 'YYYY-MM-DD') AS project_closing_date,
+	NULLIF(TO_CHAR(current_project_cost, '999,999,999,999.99'), '') AS current_project_cost,
+	NULLIF(TO_CHAR(ibrd_commitment, '999,999,999,999.99'), '') AS ibrd_commitment,
+	NULLIF(TO_CHAR(ida_commitment, '999,999,999,999.99'), '') AS ida_commitment,
+	NULLIF(TO_CHAR(grant_amount, '999,999,999,999.99'), '') AS grant_amount,
+	NULLIF(TO_CHAR(total_ibrd_ida_and_grant_commitment, '999,999,999,999.99'), '') AS total_ibrd_ida_and_grant_commitment,
+	borrower,
+	lending_instrument,
+	environmental_assessment_category,
+	environmental_and_social_risk,
+	consultant_services_required,
+	financing_type
 FROM wb_projects
 WHERE
-	"Country" = 'Madagascar'
+	country = 'Madagascar'
 ORDER BY
-	-- "Project ID"
-	"Borrower"
+	-- project_ID
+	borrower
