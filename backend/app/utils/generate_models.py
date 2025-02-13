@@ -109,7 +109,8 @@ def generate_model_class(table_name: str, columns: List[Dict]) -> str:
 
     # Handle relationships to main projects table
     if table_name != 'wb_projects':
-        key_column = 'project' if 'Project' in primary_keys else 'project_id'
+        # key_column = 'project' if 'Project' in primary_keys else 'project_id'
+        key_column = 'project' if 'project' in primary_keys else 'project_id'
         relationship_str = f"""
     # Relationship with the main projects table
     project_rel = relationship('WbProjects', backref='{table_name.replace('wb_', '').replace('_', '')}_collection',

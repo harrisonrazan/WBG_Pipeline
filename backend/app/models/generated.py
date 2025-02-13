@@ -106,7 +106,7 @@ class WbProjectFinancers(Base):
 
     # Relationship with the main projects table
     project_rel = relationship('WbProjects', backref='projectfinancers_collection',
-                               foreign_keys=[project_id])
+                               foreign_keys=[project])
 
     def __repr__(self):
         return f"<WbProjectFinancers({self.project}, {self.financer_id})>"
