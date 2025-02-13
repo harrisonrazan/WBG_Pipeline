@@ -4,6 +4,7 @@
 import pandas as pd
 from typing import Dict, Any, List
 from datetime import datetime
+import re
 import logging
 
 logger = logging.getLogger(__name__)
@@ -197,6 +198,32 @@ def process_contract_awards(data: List[Dict[str, Any]]) -> pd.DataFrame:
         logger.error(f"Error processing contract awards: {str(e)}")
         raise
 
+def standardize_column_name(column: str) -> str:
+    """
+    Standardizes column names to lowercase with underscores.
+    
+    Args:
+        column: Original column name from Excel
+        
+    Returns:
+        Standardized column name in lowercase with underscores
+    """
+    # Convert to lowercase
+    name = str(column).lower()
+    
+    # Replace special characters and spaces with underscore
+    import re
+    # Replace any non-alphanumeric character (except underscores) with underscore
+    name = re.sub(r'[^a-z0-9_]', '_', name)
+    
+    # Replace multiple consecutive underscores with a single underscore
+    name = re.sub(r'_+', '_', name)
+    
+    # Remove leading/trailing underscores
+    name = name.strip('_')
+    
+    return name
+
 def process_projects_excel(file_path: str) -> Dict[str, pd.DataFrame]:
     """
     Processes the World Bank projects Excel file into multiple DataFrames.
@@ -207,6 +234,7 @@ def process_projects_excel(file_path: str) -> Dict[str, pd.DataFrame]:
     - Skips the first row in all sheets (download timestamp)
     - For 'World Bank Projects' sheet, skips first and third rows
       (timestamp and duplicate header)
+    - Standardizes all column names to lowercase with underscores
     
     Args:
         file_path: Path to the downloaded Excel file
@@ -233,26 +261,30 @@ def process_projects_excel(file_path: str) -> Dict[str, pd.DataFrame]:
                 skiprows=skiprows
             )
             
-            # Convert date columns if present
+            # Standardize column names
+            df.columns = [standardize_column_name(col) for col in df.columns]
+            
+            # Convert date columns if present (using standardized column names)
             date_columns = [col for col in df.columns 
-                          if any(date_term in col.lower() 
+                          if any(date_term in col 
                                 for date_term in ['date', 'as_of'])]
             for col in date_columns:
                 df[col] = pd.to_datetime(df[col], errors='coerce')
             
-            # Convert numeric columns
+            # Convert numeric columns (using standardized column names)
             numeric_columns = [col for col in df.columns 
-                             if any(amount_term in col.lower() 
+                             if any(amount_term in col 
                                    for amount_term in ['amount', 'cost', 'commitment'])]
             for col in numeric_columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
             
             # Store the DataFrame using the sheet name as key
             # Convert sheet name to lowercase and replace spaces with underscores
-            sheet_key = sheet.lower().replace(' ', '_')
+            sheet_key = standardize_column_name(sheet)
             dataframes[sheet_key] = df
             
             logging.info(f"Processed sheet '{sheet}' with {len(df)} rows")
+            logging.debug(f"Standardized columns for '{sheet}': {list(df.columns)}")
         
         return dataframes
         

@@ -66,14 +66,20 @@ def generate_model_class(table_name: str, columns: List[Dict]) -> str:
 """
 
     # Define primary keys conditionally
-    if table_name == 'wb_project_financers':
-        primary_keys = ['Project', 'Financer ID']  # Composite primary key
+    if table_name == 'wb_projects':
+        primary_keys = ['project_id']
+    elif table_name == 'wb_project_themes':
+        primary_keys = ['project_id', 'level_1', 'level_2', 'level_3']
+    elif table_name == 'wb_project_sectors':
+        primary_keys = ['project_id', 'major_sector', 'sector']
+    elif table_name == 'wb_project_geo_locations':
+        primary_keys = ['project_id', 'geo_loc_id', 'place_id']
+    elif table_name == 'wb_project_financers':
+        primary_keys = ['project', 'financer_id']  # Composite primary key
     elif table_name == 'wb_credit_statements':
         primary_keys = ['credit_number']
     elif table_name == 'wb_contract_awards':
         primary_keys = ['wb_contract_number', 'project_id']
-    else:
-        primary_keys = ['Project ID']  # Default primary key for other tables
 
     # Add each column with appropriate configuration
     primary_key_fields = []

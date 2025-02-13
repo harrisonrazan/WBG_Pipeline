@@ -4,53 +4,34 @@ from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, Foreig
 from sqlalchemy.orm import relationship
 from .base import Base
 
-class WbProjectFinancers(Base):
-    """SQLAlchemy model for the wb_project_financers table.""" 
-    __tablename__ = 'wb_project_financers'
-
-    project = Column('Project', String, primary_key=True)
-    name = Column('Name', String)
-    current_amount = Column('Current Amount', String)
-    amount = Column('Amount (USD)', String)
-    financer_id = Column('Financer ID', String, primary_key=True)
-    currency = Column('Currency', String)
-    project_financial_type = Column('Project Financial Type', String)
-
-    # Relationship with the main projects table
-    project_rel = relationship('WbProjects', backref='projectfinancers_collection',
-                               foreign_keys=[project])
-
-    def __repr__(self):
-        return f"<WbProjectFinancers({self.project}, {self.financer_id})>"
-
 class WbProjects(Base):
     """SQLAlchemy model for the wb_projects table.""" 
     __tablename__ = 'wb_projects'
 
-    project_id = Column('Project ID', String, primary_key=True)
-    region = Column('Region', String)
-    country = Column('Country', String)
-    project_status = Column('Project Status', String)
-    last_stage_reached_name = Column('Last Stage Reached Name', String)
-    project_name = Column('Project Name', String)
-    project_development_objective = Column('Project Development Objective ', String)
-    implementing_agency = Column('Implementing Agency', String)
-    public_disclosure_date = Column('Public Disclosure Date', DateTime)
-    board_approval_date = Column('Board Approval Date', DateTime)
-    loan_effective_date = Column('Loan Effective Date', DateTime)
-    project_closing_date = Column('Project Closing Date', DateTime)
-    current_project_cost = Column('Current Project Cost', String)
-    ibrd_commitment = Column('IBRD Commitment', String)
-    ida_commitment = Column('IDA Commitment', String)
-    grant_amount = Column('Grant Amount', String)
-    total_ibrd_ida_and_grant_commitment = Column('Total IBRD, IDA and Grant Commitment', String)
-    borrower = Column('Borrower', String)
-    lending_instrument = Column('Lending Instrument', String)
-    environmental_assessment_category = Column('Environmental Assessment Category', String)
-    environmental_and_social_risk = Column('Environmental and Social Risk', String)
-    associated_project = Column('Associated Project', String)
-    consultant_services_required = Column('Consultant Services Required', String)
-    financing_type = Column('Financing Type', String)
+    project_id = Column('project_id', String, primary_key=True)
+    region = Column('region', String)
+    country = Column('country', String)
+    project_status = Column('project_status', String)
+    last_stage_reached_name = Column('last_stage_reached_name', String)
+    project_name = Column('project_name', String)
+    project_development_objective = Column('project_development_objective', String)
+    implementing_agency = Column('implementing_agency', String)
+    public_disclosure_date = Column('public_disclosure_date', DateTime)
+    board_approval_date = Column('board_approval_date', DateTime)
+    loan_effective_date = Column('loan_effective_date', DateTime)
+    project_closing_date = Column('project_closing_date', DateTime)
+    current_project_cost = Column('current_project_cost', String)
+    ibrd_commitment = Column('ibrd_commitment', String)
+    ida_commitment = Column('ida_commitment', String)
+    grant_amount = Column('grant_amount', String)
+    total_ibrd_ida_and_grant_commitment = Column('total_ibrd_ida_and_grant_commitment', String)
+    borrower = Column('borrower', String)
+    lending_instrument = Column('lending_instrument', String)
+    environmental_assessment_category = Column('environmental_assessment_category', String)
+    environmental_and_social_risk = Column('environmental_and_social_risk', String)
+    associated_project = Column('associated_project', String)
+    consultant_services_required = Column('consultant_services_required', String)
+    financing_type = Column('financing_type', String)
 
     def __repr__(self):
         return f"<WbProjects({self.project_id})>"
@@ -59,57 +40,76 @@ class WbProjectThemes(Base):
     """SQLAlchemy model for the wb_project_themes table.""" 
     __tablename__ = 'wb_project_themes'
 
-    project_id = Column('Project ID', String, primary_key=True)
-    level_1 = Column('Level 1', String)
-    percentage_1 = Column('Percentage 1', String)
-    level_2 = Column('Level 2', String)
-    percentage_2 = Column('Percentage 2', String)
-    level_3 = Column('Level 3', String)
-    percentage_3 = Column('Percentage 3', String)
+    project_id = Column('project_id', String, primary_key=True)
+    level_1 = Column('level_1', String, primary_key=True)
+    percentage_1 = Column('percentage_1', String)
+    level_2 = Column('level_2', String, primary_key=True)
+    percentage_2 = Column('percentage_2', String)
+    level_3 = Column('level_3', String, primary_key=True)
+    percentage_3 = Column('percentage_3', String)
 
     # Relationship with the main projects table
     project_rel = relationship('WbProjects', backref='projectthemes_collection',
                                foreign_keys=[project_id])
 
     def __repr__(self):
-        return f"<WbProjectThemes({self.project_id})>"
+        return f"<WbProjectThemes({self.project_id}, {self.level_1}, {self.level_2}, {self.level_3})>"
 
 class WbProjectSectors(Base):
     """SQLAlchemy model for the wb_project_sectors table.""" 
     __tablename__ = 'wb_project_sectors'
 
-    project_id = Column('Project ID', String, primary_key=True)
-    major_sector = Column('Major Sector', String)
-    sector = Column('Sector', String)
-    sector_percent = Column('Sector Percent', String)
+    project_id = Column('project_id', String, primary_key=True)
+    major_sector = Column('major_sector', String, primary_key=True)
+    sector = Column('sector', String, primary_key=True)
+    sector_percent = Column('sector_percent', String)
 
     # Relationship with the main projects table
     project_rel = relationship('WbProjects', backref='projectsectors_collection',
                                foreign_keys=[project_id])
 
     def __repr__(self):
-        return f"<WbProjectSectors({self.project_id})>"
+        return f"<WbProjectSectors({self.project_id}, {self.major_sector}, {self.sector})>"
 
 class WbProjectGeoLocations(Base):
     """SQLAlchemy model for the wb_project_geo_locations table.""" 
     __tablename__ = 'wb_project_geo_locations'
 
-    project_id = Column('Project ID', String, primary_key=True)
-    geo_loc_id = Column('GEO Loc ID', String)
-    place_id = Column('Place ID', String)
-    wbg_country_key = Column('WBG Country Key', String)
-    geo_loc_name = Column('GEO Loc Name', String)
-    geo_latitude_number = Column('GEO Latitude Number', String)
-    geo_longitude_number = Column('GEO Longitude Number', String)
-    admin_unit1_name = Column('Admin Unit1 Name', String)
-    admin_unit2_name = Column('Admin Unit2 Name', String)
+    project_id = Column('project_id', String, primary_key=True)
+    geo_loc_id = Column('geo_loc_id', String, primary_key=True)
+    place_id = Column('place_id', String, primary_key=True)
+    wbg_country_key = Column('wbg_country_key', String)
+    geo_loc_name = Column('geo_loc_name', String)
+    geo_latitude_number = Column('geo_latitude_number', String)
+    geo_longitude_number = Column('geo_longitude_number', String)
+    admin_unit1_name = Column('admin_unit1_name', String)
+    admin_unit2_name = Column('admin_unit2_name', String)
 
     # Relationship with the main projects table
     project_rel = relationship('WbProjects', backref='projectgeolocations_collection',
                                foreign_keys=[project_id])
 
     def __repr__(self):
-        return f"<WbProjectGeoLocations({self.project_id})>"
+        return f"<WbProjectGeoLocations({self.project_id}, {self.geo_loc_id}, {self.place_id})>"
+
+class WbProjectFinancers(Base):
+    """SQLAlchemy model for the wb_project_financers table.""" 
+    __tablename__ = 'wb_project_financers'
+
+    project = Column('project', String, primary_key=True)
+    name = Column('name', String)
+    current_amount = Column('current_amount', String)
+    amount_usd = Column('amount_usd', String)
+    financer_id = Column('financer_id', String, primary_key=True)
+    currency = Column('currency', String)
+    project_financial_type = Column('project_financial_type', String)
+
+    # Relationship with the main projects table
+    project_rel = relationship('WbProjects', backref='projectfinancers_collection',
+                               foreign_keys=[project_id])
+
+    def __repr__(self):
+        return f"<WbProjectFinancers({self.project}, {self.financer_id})>"
 
 class WbCreditStatements(Base):
     """SQLAlchemy model for the wb_credit_statements table.""" 
