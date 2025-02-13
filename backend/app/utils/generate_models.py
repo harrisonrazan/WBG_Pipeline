@@ -54,8 +54,7 @@ def sanitize_column_name(name: str) -> str:
 
 def generate_model_class(table_name: str, columns: List[Dict]) -> str:
     """
-    Generates a SQLAlchemy model class with proper primary keys based on project relationships.
-    Most tables use 'Project ID' as their primary key, while the financers table uses 'Project' and 'Financer ID'.
+    Generates a SQLAlchemy model class with primary keys only - no relationships.
     """
     class_name = ''.join(word.title() for word in table_name.split('_'))
     
@@ -75,7 +74,7 @@ def generate_model_class(table_name: str, columns: List[Dict]) -> str:
     elif table_name == 'wb_project_geo_locations':
         primary_keys = ['project_id', 'geo_loc_id', 'place_id']
     elif table_name == 'wb_project_financers':
-        primary_keys = ['project', 'financer_id']  # Composite primary key
+        primary_keys = ['project', 'financer_id']
     elif table_name == 'wb_credit_statements':
         primary_keys = ['credit_number']
     elif table_name == 'wb_contract_awards':
@@ -94,8 +93,8 @@ def generate_model_class(table_name: str, columns: List[Dict]) -> str:
         col_type = get_column_type_string(col['type'])
         attributes.append(col_type)
 
-        # Set primary key
-        if original_name in primary_keys:
+        # Set primary key if applicable
+        if python_name in primary_keys or original_name in primary_keys:
             attributes.append('primary_key=True')
             primary_key_fields.append(python_name)
 
@@ -107,23 +106,11 @@ def generate_model_class(table_name: str, columns: List[Dict]) -> str:
         attr_str = ', '.join(attributes)
         model_str += f"    {python_name} = Column('{original_name}', {attr_str})\n"
 
-    # Handle relationships to main projects table
-    if table_name != 'wb_projects':
-        # key_column = 'project' if 'Project' in primary_keys else 'project_id'
-        key_column = 'project' if 'project' in primary_keys else 'project_id'
-        relationship_str = f"""
-    # Relationship with the main projects table
-    project_rel = relationship('WbProjects', backref='{table_name.replace('wb_', '').replace('_', '')}_collection',
-                               foreign_keys=[{key_column}])
-"""
-        model_str += relationship_str
-
     # Add string representation method
     model_str += "\n    def __repr__(self):\n"
     model_str += f"        return f\"<{class_name}(" + ", ".join(f"{{self.{pk}}}" for pk in primary_key_fields) + ")>\"\n\n"
 
     return model_str
-
 
 def generate_models():
     """
@@ -138,20 +125,18 @@ def generate_models():
         engine = create_engine(database_url)
         inspector = inspect(engine)
         
-        # Get all table names and log them
         table_names = inspector.get_table_names()
         logger.info(f"Found tables: {table_names}")
         
-        # Start with imports
+        # Start with imports - note we removed relationship from imports
         content = '''"""Auto-generated models. Do not edit manually."""
 
-from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
 from .base import Base
 
 '''
         
-        # Generate models with detailed logging
+        # Generate models
         for table_name in table_names:
             try:
                 columns = inspector.get_columns(table_name)
@@ -165,7 +150,7 @@ from .base import Base
                 logger.error(f"Error generating model for table {table_name}: {str(table_error)}")
                 raise
         
-        # Write to file with path verification
+        # Write to file
         models_dir = Path('/app/app/models')
         models_dir.mkdir(exist_ok=True)
         generated_file = models_dir / 'generated.py'
