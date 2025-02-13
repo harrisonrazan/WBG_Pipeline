@@ -23,7 +23,7 @@ API_CONFIG = {
 
 # Database tables configuration
 TABLES = {
-    'projects': 'wb_projects',  # Main projects data
+    'world_bank_projects': 'wb_projects',  # Main projects data
     'themes': 'wb_project_themes',
     'sectors': 'wb_project_sectors',
     'geo_locations': 'wb_project_geo_locations',
@@ -35,7 +35,7 @@ TABLES = {
 
 
 # Fetch interval in seconds (default 1 hour)
-FETCH_INTERVAL = 3600
+FETCH_INTERVAL = 604800
 
 # Logging configuration
 LOG_CONFIG = {

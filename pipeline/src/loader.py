@@ -112,7 +112,7 @@ def load_dataframe(
     table_name: str,
     engine: Any,
     if_exists: str = 'replace',
-    create_backup: bool = True
+    create_backup: bool = False
 ) -> bool:
     """
     Loads a DataFrame into PostgreSQL with enhanced schema handling.

@@ -75,14 +75,14 @@ def run_pipeline(engine):
         for table_key, df in project_dataframes.items():
             if table_key in TABLES:
                 logger.info(f"Loading {table_key} data...")
-                load_dataframe(df, TABLES[table_key], engine)
+                load_dataframe(df, TABLES[table_key], engine, create_backup=False)
             else:
                 logger.warning(f"No table mapping found for {table_key}")
 
         # Load other datasets
         logger.info("Loading additional datasets to PostgreSQL...")
-        load_dataframe(credit_df, TABLES['credit_statements'], engine)
-        load_dataframe(contract_df, TABLES['contract_awards'], engine)
+        load_dataframe(credit_df, TABLES['credit_statements'], engine, create_backup=False)
+        load_dataframe(contract_df, TABLES['contract_awards'], engine, create_backup=False)
 
         # Clean up the temporary Excel file
         try:
