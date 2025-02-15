@@ -1,0 +1,32 @@
+# Format:
+# query_path:           # Relative path to the query file from queries directory
+#   folder_id: string   # Google Drive folder ID where the file should be uploaded
+#   filename: string    # Name of the file in Google Drive
+
+# "Madagascar/CASEF.sql":
+#   drive_path: "Madagascar/Reports"  # Will be created if doesn't exist
+#   filename: "CASEF_Results.xlsx"
+
+"Madagascar/contract_awards.sql":
+  drive_path: "MADAGASCAR"
+  filename: "Contract Awards.xlsx"
+
+"Madagascar/credit_statements.sql":
+  drive_path: "MADAGASCAR"
+  filename: "Credit Statement.xlsx"
+
+"Madagascar/projects_list.sql":
+  drive_path: "MADAGASCAR"
+  filename: "Project List.xlsx"
+
+"Madagascar/UN_organizations.sql":
+  drive_path: "MADAGASCAR"
+  filename: "UN Orgs Contracts.xlsx"
+
+"Madagascar/contract_percentage_by_country.sql":
+  drive_path: "MADAGASCAR"
+  filename: "Contract Percentage By Country.xlsx"
+
+"Madagascar/pivoted_percentage.sql":
+  drive_path: "MADAGASCAR"
+  filename: "Country Contract Percentage per Project.xlsx"

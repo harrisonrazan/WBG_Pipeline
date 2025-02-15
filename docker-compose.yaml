@@ -25,8 +25,11 @@ services:
       - pipeline  # Add explicit dependency on pipeline
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
+      - GOOGLE_DRIVE_CREDENTIALS_PATH=${GOOGLE_DRIVE_CREDENTIALS_PATH}
+      - GOOGLE_DRIVE_BASE_FOLDER_ID=${GOOGLE_DRIVE_BASE_FOLDER_ID}
     volumes:
       - ./backend:/app
+      - ./queries:/queries:ro
     networks:
       - app-network
     restart: unless-stopped
