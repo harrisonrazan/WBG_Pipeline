@@ -3,50 +3,6 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
 from .base import Base
 
-class WbProjectSectors(Base):
-    """SQLAlchemy model for the wb_project_sectors table.""" 
-    __tablename__ = 'wb_project_sectors'
-
-    project_id = Column('project_id', String, primary_key=True)
-    major_sector = Column('major_sector', String, primary_key=True)
-    sector = Column('sector', String, primary_key=True)
-    sector_percent = Column('sector_percent', String)
-
-    def __repr__(self):
-        return f"<WbProjectSectors({self.project_id}, {self.major_sector}, {self.sector})>"
-
-class WbContractAwards(Base):
-    """SQLAlchemy model for the wb_contract_awards table.""" 
-    __tablename__ = 'wb_contract_awards'
-
-    as_of_date = Column('as_of_date', DateTime)
-    fiscal_year = Column('fiscal_year', String)
-    region = Column('region', String)
-    borrower_country = Column('borrower_country', String)
-    borrower_country_code = Column('borrower_country_code', String)
-    project_id = Column('project_id', String, primary_key=True)
-    project_name = Column('project_name', String)
-    project_global_practice = Column('project_global_practice', String)
-    procurement_category = Column('procurement_category', String)
-    procurement_method = Column('procurement_method', String)
-    wb_contract_number = Column('wb_contract_number', String, primary_key=True)
-    contract_description = Column('contract_description', String)
-    borrower_contract_reference_number = Column('borrower_contract_reference_number', String)
-    contract_signing_date = Column('contract_signing_date', DateTime)
-    supplier_id = Column('supplier_id', String)
-    supplier = Column('supplier', String)
-    supplier_country = Column('supplier_country', String)
-    supplier_country_code = Column('supplier_country_code', String)
-    supplier_contract_amount_usd = Column('supplier_contract_amount_usd', String)
-    review_type = Column('review_type', String)
-    is_domestic_supplier = Column('is_domestic_supplier', Boolean)
-    contract_age_days = Column('contract_age_days', String)
-    processed_at = Column('processed_at', DateTime)
-    fiscal_quarter = Column('fiscal_quarter', Integer)
-
-    def __repr__(self):
-        return f"<WbContractAwards({self.project_id}, {self.wb_contract_number})>"
-
 class WbProjects(Base):
     """SQLAlchemy model for the wb_projects table.""" 
     __tablename__ = 'wb_projects'
@@ -93,6 +49,18 @@ class WbProjectThemes(Base):
 
     def __repr__(self):
         return f"<WbProjectThemes({self.project_id}, {self.level_1}, {self.level_2}, {self.level_3})>"
+
+class WbProjectSectors(Base):
+    """SQLAlchemy model for the wb_project_sectors table.""" 
+    __tablename__ = 'wb_project_sectors'
+
+    project_id = Column('project_id', String, primary_key=True)
+    major_sector = Column('major_sector', String, primary_key=True)
+    sector = Column('sector', String, primary_key=True)
+    sector_percent = Column('sector_percent', String)
+
+    def __repr__(self):
+        return f"<WbProjectSectors({self.project_id}, {self.major_sector}, {self.sector})>"
 
 class WbProjectGeoLocations(Base):
     """SQLAlchemy model for the wb_project_geo_locations table.""" 
@@ -166,4 +134,36 @@ class WbCreditStatements(Base):
 
     def __repr__(self):
         return f"<WbCreditStatements({self.credit_number})>"
+
+class WbContractAwards(Base):
+    """SQLAlchemy model for the wb_contract_awards table.""" 
+    __tablename__ = 'wb_contract_awards'
+
+    as_of_date = Column('as_of_date', DateTime)
+    fiscal_year = Column('fiscal_year', String)
+    region = Column('region', String)
+    borrower_country = Column('borrower_country', String)
+    borrower_country_code = Column('borrower_country_code', String)
+    project_id = Column('project_id', String, primary_key=True)
+    project_name = Column('project_name', String)
+    project_global_practice = Column('project_global_practice', String)
+    procurement_category = Column('procurement_category', String)
+    procurement_method = Column('procurement_method', String)
+    wb_contract_number = Column('wb_contract_number', String, primary_key=True)
+    contract_description = Column('contract_description', String)
+    borrower_contract_reference_number = Column('borrower_contract_reference_number', String)
+    contract_signing_date = Column('contract_signing_date', DateTime)
+    supplier_id = Column('supplier_id', String)
+    supplier = Column('supplier', String)
+    supplier_country = Column('supplier_country', String)
+    supplier_country_code = Column('supplier_country_code', String)
+    supplier_contract_amount_usd = Column('supplier_contract_amount_usd', String)
+    review_type = Column('review_type', String)
+    is_domestic_supplier = Column('is_domestic_supplier', Boolean)
+    contract_age_days = Column('contract_age_days', String)
+    processed_at = Column('processed_at', DateTime)
+    fiscal_quarter = Column('fiscal_quarter', Integer)
+
+    def __repr__(self):
+        return f"<WbContractAwards({self.project_id}, {self.wb_contract_number})>"
 
