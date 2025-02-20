@@ -7,9 +7,13 @@
 #   drive_path: "Madagascar/Reports"  # Will be created if doesn't exist
 #   filename: "CASEF_Results.xlsx"
 
-"Madagascar/contract_awards.sql":
+"Madagascar/contract_awards_country_distribution.sql":
   drive_path: "MADAGASCAR"
-  filename: "Contract Awards.xlsx"
+  filename: "Contract Awards Country Distribution.xlsx"
+
+"Madagascar/contract_awards_supplier_distribution.sql":
+  drive_path: "MADAGASCAR"
+  filename: "Contract Awards Supplier Distribution.xlsx"
 
 "Madagascar/credit_statements.sql":
   drive_path: "MADAGASCAR"
@@ -30,3 +34,7 @@
 "Madagascar/pivoted_percentage.sql":
   drive_path: "MADAGASCAR"
   filename: "Country Contract Percentage per Project.xlsx"
+
+"Madagascar/project_associated_cost_comparison.sql":
+  drive_path: "MADAGASCAR"
+  filename: "Project Associated Cost Comparison.xlsx"

@@ -3,6 +3,23 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
 from .base import Base
 
+class WbProjectGeoLocations(Base):
+    """SQLAlchemy model for the wb_project_geo_locations table.""" 
+    __tablename__ = 'wb_project_geo_locations'
+
+    project_id = Column('project_id', String, primary_key=True)
+    geo_loc_id = Column('geo_loc_id', String, primary_key=True)
+    place_id = Column('place_id', String, primary_key=True)
+    wbg_country_key = Column('wbg_country_key', String)
+    geo_loc_name = Column('geo_loc_name', String)
+    geo_latitude_number = Column('geo_latitude_number', String)
+    geo_longitude_number = Column('geo_longitude_number', String)
+    admin_unit1_name = Column('admin_unit1_name', String)
+    admin_unit2_name = Column('admin_unit2_name', String)
+
+    def __repr__(self):
+        return f"<WbProjectGeoLocations({self.project_id}, {self.geo_loc_id}, {self.place_id})>"
+
 class WbProjects(Base):
     """SQLAlchemy model for the wb_projects table.""" 
     __tablename__ = 'wb_projects'
@@ -61,23 +78,6 @@ class WbProjectSectors(Base):
 
     def __repr__(self):
         return f"<WbProjectSectors({self.project_id}, {self.major_sector}, {self.sector})>"
-
-class WbProjectGeoLocations(Base):
-    """SQLAlchemy model for the wb_project_geo_locations table.""" 
-    __tablename__ = 'wb_project_geo_locations'
-
-    project_id = Column('project_id', String, primary_key=True)
-    geo_loc_id = Column('geo_loc_id', String, primary_key=True)
-    place_id = Column('place_id', String, primary_key=True)
-    wbg_country_key = Column('wbg_country_key', String)
-    geo_loc_name = Column('geo_loc_name', String)
-    geo_latitude_number = Column('geo_latitude_number', String)
-    geo_longitude_number = Column('geo_longitude_number', String)
-    admin_unit1_name = Column('admin_unit1_name', String)
-    admin_unit2_name = Column('admin_unit2_name', String)
-
-    def __repr__(self):
-        return f"<WbProjectGeoLocations({self.project_id}, {self.geo_loc_id}, {self.place_id})>"
 
 class WbProjectFinancers(Base):
     """SQLAlchemy model for the wb_project_financers table.""" 

@@ -103,6 +103,6 @@ pipeline:
 	docker-compose logs -f pipeline
 
 db:
-	@echo "Building and starting database service..."
+	@echo "Building and starting postgreSQL database service..."
 	docker-compose up -d --build postgres
 	docker-compose logs -f postgres
