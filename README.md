@@ -1,0 +1,1 @@
+![Architecture Diagram](images/microservice_architecture.png)
