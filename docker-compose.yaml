@@ -30,7 +30,6 @@ services:
       - pipeline  # Add explicit dependency on pipeline
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
-      # - GOOGLE_DRIVE_CREDENTIALS_PATH=${GOOGLE_DRIVE_CREDENTIALS_PATH}
       - GOOGLE_DRIVE_CREDENTIALS_PATH=/app/credentials/google_drive_credentials.json
       - GOOGLE_DRIVE_BASE_FOLDER_ID=${GOOGLE_DRIVE_BASE_FOLDER_ID}
     volumes:
