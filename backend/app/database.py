@@ -43,17 +43,6 @@ def wait_for_db_and_tables(engine, required_tables, max_retries=30, retry_interv
     missing_tables = set(required_tables) - set(inspector.get_table_names())
     raise RuntimeError(f"Database tables not ready after {max_retries} retries. Missing tables: {missing_tables}")
 
-# List of required tables
-REQUIRED_TABLES = [
-    'wb_projects',
-    'wb_project_themes',
-    'wb_project_sectors',
-    'wb_project_geo_locations',
-    'wb_project_financers',
-    'wb_credit_statements',
-    'wb_contract_awards'
-]
-
 # Create the database engine with more detailed logging
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:

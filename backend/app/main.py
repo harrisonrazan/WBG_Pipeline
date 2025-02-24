@@ -8,9 +8,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 from .models import (
-    WbProjects, WbProjectSectors, WbProjectThemes,
-    WbContractAwards, WbCreditStatements,
-    WbProjectFinancers, WbProjectGeoLocations
+    WbProjectFinancers,
+    WbCreditStatements,
+    WbTrustFundCommitments,
+    WbCorporateProcurementContractAwards,
+    WbLoanStatements,
+    WbProcurementNotices,
+    WbFinancialIntermediaryFundsContributions,
+    WbContractAwards,
+    WbProjectGeoLocations,
+    WbProjects,
+    WbProjectThemes,
+    WbProjectSectors
 )
 
 class QueryRequest(BaseModel):
@@ -132,7 +141,6 @@ async def execute_query(query_path: str, db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f"Error executing query {query_path}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # Add these new endpoints
 @app.get("/available_queries")

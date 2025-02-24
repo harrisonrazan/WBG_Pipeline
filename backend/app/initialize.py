@@ -1,5 +1,6 @@
 import logging
-from app.database import wait_for_db_and_tables, engine, REQUIRED_TABLES
+from app.database import wait_for_db_and_tables, engine
+from app.config import REQUIRED_TABLES
 from app.utils.generate_models import generate_models
 
 # Configure logging
@@ -16,7 +17,7 @@ def initialize_application():
         
         # Wait for database tables
         logger.info("Waiting for required database tables...")
-        wait_for_db_and_tables(engine, REQUIRED_TABLES)
+        wait_for_db_and_tables(engine, list(REQUIRED_TABLES.keys()))
         logger.info("All required tables are present")
         
         # Generate SQLAlchemy models

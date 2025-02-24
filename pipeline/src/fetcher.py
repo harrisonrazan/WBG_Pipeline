@@ -2,11 +2,12 @@
 import requests
 import logging
 import time
+import os
 from typing import Dict, Any
 from config import API_CONFIG
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
-import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 @dataclass
 class WorldBankAPIConfig:
@@ -15,7 +16,7 @@ class WorldBankAPIConfig:
     dataset_id: str
     resource_id: str
     records_per_page: int
-    
+
     def get_url(self, page: int) -> str:
         """Constructs the URL for a specific page"""
         skip = (page - 1) * self.records_per_page
@@ -26,69 +27,92 @@ class WorldBankAPIConfig:
 def create_api_config(endpoint_name: str) -> WorldBankAPIConfig:
     """Creates an API configuration from the config settings"""
     endpoint_config = API_CONFIG['endpoints'][endpoint_name]
+    logging.info(f"Creating WorldBankAPIConfig with base_url={API_CONFIG['base_url']}, dataset_id={endpoint_config['dataset_id']}, resource_id={endpoint_config['resource_id']}, records_per_page={API_CONFIG['records_per_page']}")
     return WorldBankAPIConfig(
-        base_url=API_CONFIG['base_url'],
-        dataset_id=endpoint_config['dataset_id'],
-        resource_id=endpoint_config['resource_id'],
-        records_per_page=API_CONFIG['records_per_page']
+        base_url=str(API_CONFIG['base_url']),
+        dataset_id=str(endpoint_config['dataset_id']),
+        resource_id=str(endpoint_config['resource_id']),
+        records_per_page=int(API_CONFIG['records_per_page'])
     )
+
+def fetch_page_data(config: WorldBankAPIConfig, page: int) -> List[Dict[str, Any]]:
+    """Fetches data for a specific page."""
+    url = config.get_url(page)
+    retry_count = 0
+
+    while retry_count < API_CONFIG['max_retries']:
+        try:
+            logging.info(f"Fetching page {page}")
+            response = requests.get(url, timeout=API_CONFIG['timeout'])
+            response.raise_for_status()
+            data = response.json()
+
+            if 'data' not in data or not data['data']:
+                return []
+
+            return data['data']
+
+        except requests.RequestException as e:
+            retry_count += 1
+            logging.warning(f"Retry {retry_count}/{API_CONFIG['max_retries']} for page {page} after error: {str(e)}")
+            time.sleep(API_CONFIG['retry_delay'])
+
+    logging.error(f"Failed to fetch page {page} after {API_CONFIG['max_retries']} retries.")
+    return []
 
 def fetch_paginated_data(endpoint_name: str) -> Dict[str, Any]:
     """
     Fetches all data from a World Bank API endpoint with pagination support.
-    
-    Args:
-        endpoint_name: Name of the endpoint configuration to use
-        
-    Returns:
-        Dictionary containing total count and all fetched data
+    This version spreads the work across multiple cores.
     """
     config = create_api_config(endpoint_name)
     all_data = []
     total_count = 0
-    page = 1
-    
-    while True:
-        url = config.get_url(page)
-        retry_count = 0
-        
-        while retry_count < API_CONFIG['max_retries']:
+
+    # Fetch first page to determine total count
+    first_page_data = fetch_page_data(config, 1)
+    if not first_page_data:
+        return {'count': total_count, 'data': all_data}
+
+    # Get the total count from the first page response
+    first_page_url = config.get_url(1)
+    response = requests.get(first_page_url, timeout=API_CONFIG['timeout'])
+    response.raise_for_status()
+    data = response.json()
+    total_count = data.get('count', len(first_page_data))
+
+    all_data.extend(first_page_data)
+
+    # Calculate the total number of pages
+    total_pages = (total_count + config.records_per_page - 1) // config.records_per_page
+
+    # Log the number of workers being used
+    num_workers = API_CONFIG['num_workers']
+    logging.info(f"Using {num_workers} worker threads for parallel fetching.")
+
+    # Use ThreadPoolExecutor to parallelize fetching of remaining pages
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = {executor.submit(fetch_page_data, config, page): page for page in range(2, total_pages + 1)}
+
+        for future in as_completed(futures):
+            page = futures[future]
             try:
-                logging.info(f"Fetching page {page} from {endpoint_name}")
-                response = requests.get(url, timeout=API_CONFIG['timeout'])
-                response.raise_for_status()
-                
-                data = response.json()
-                
-                if 'data' not in data or not data['data']:
-                    return {'count': total_count, 'data': all_data}
-                
-                if page == 1 and 'count' in data:
-                    total_count = data['count']
-                    logging.info(f"Total records to fetch: {total_count}")
-                
-                all_data.extend(data['data'])
-                page += 1
-                break
-                
-            except requests.RequestException as e:
-                retry_count += 1
-                if retry_count == API_CONFIG['max_retries']:
-                    logging.error(f"Failed to fetch data after {API_CONFIG['max_retries']} attempts: {str(e)}")
-                    return {'count': total_count, 'data': all_data}
-                
-                logging.warning(f"Retry {retry_count}/{API_CONFIG['max_retries']} after error: {str(e)}")
-                time.sleep(API_CONFIG['retry_delay'])
-        
-        time.sleep(1)  # Rate limiting
+                page_data = future.result()
+                all_data.extend(page_data)
+                logging.info(f"Successfully fetched page {page}")
+            except Exception as e:
+                logging.error(f"Failed to fetch page {page}: {str(e)}")
 
-def fetch_credit_statements() -> Dict[str, Any]:
+    return {'count': total_count, 'data': all_data}
+
+def fetch_wb_endppoints(endpoint_name: str) -> Dict[str, Any]:
     """Fetches all credit statement data"""
-    return fetch_paginated_data('credit_statements')
+    return fetch_paginated_data(endpoint_name)
 
-def fetch_contract_awards() -> Dict[str, Any]:
-    """Fetches all contract awards data"""
-    return fetch_paginated_data('contract_awards')
+# def fetch_contract_awards() -> Dict[str, Any]:
+#     """Fetches all contract awards data"""
+#     return fetch_paginated_data('contract_awards')
+
 
 def fetch_projects_excel(url: str, tmp_path: str = "/tmp") -> Optional[str]:
     """

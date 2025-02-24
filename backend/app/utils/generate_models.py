@@ -1,10 +1,11 @@
 # backend/app/utils/generate_models.py
 import os
+import logging
+import re
 from sqlalchemy import create_engine, MetaData, inspect
 from pathlib import Path
-import logging
 from typing import List, Dict, Any
-import re
+from app.config import REQUIRED_TABLES
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,7 @@ def sanitize_column_name(name: str) -> str:
 def generate_model_class(table_name: str, columns: List[Dict]) -> str:
     """
     Generates a SQLAlchemy model class with primary keys only - no relationships.
+    If no primary keys exist, adds a synthetic UUID primary key.
     """
     class_name = ''.join(word.title() for word in table_name.split('_'))
     
@@ -64,21 +66,11 @@ def generate_model_class(table_name: str, columns: List[Dict]) -> str:
 
 """
 
-    # Define primary keys conditionally
-    if table_name == 'wb_projects':
-        primary_keys = ['project_id']
-    elif table_name == 'wb_project_themes':
-        primary_keys = ['project_id', 'level_1', 'level_2', 'level_3']
-    elif table_name == 'wb_project_sectors':
-        primary_keys = ['project_id', 'major_sector', 'sector']
-    elif table_name == 'wb_project_geo_locations':
-        primary_keys = ['project_id', 'geo_loc_id', 'place_id']
-    elif table_name == 'wb_project_financers':
-        primary_keys = ['project', 'financer_id']
-    elif table_name == 'wb_credit_statements':
-        primary_keys = ['credit_number']
-    elif table_name == 'wb_contract_awards':
-        primary_keys = ['wb_contract_number', 'project_id']
+    # Get primary keys for this table
+    primary_keys = REQUIRED_TABLES.get(table_name, [])
+
+    # Track if any primary keys were found
+    has_primary_key = False
 
     # Add each column with appropriate configuration
     primary_key_fields = []
@@ -97,6 +89,7 @@ def generate_model_class(table_name: str, columns: List[Dict]) -> str:
         if python_name in primary_keys or original_name in primary_keys:
             attributes.append('primary_key=True')
             primary_key_fields.append(python_name)
+            has_primary_key = True  # Flag that a primary key exists
 
         # Add nullable attribute if specified
         if not col.get('nullable', True):
@@ -106,11 +99,17 @@ def generate_model_class(table_name: str, columns: List[Dict]) -> str:
         attr_str = ', '.join(attributes)
         model_str += f"    {python_name} = Column('{original_name}', {attr_str})\n"
 
+    # Add synthetic UUID primary key if no primary key exists
+    if not has_primary_key:
+        model_str += "\n    # Synthetic primary key added because none were found\n"
+        model_str += "    synthetic_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)\n"
+
     # Add string representation method
     model_str += "\n    def __repr__(self):\n"
     model_str += f"        return f\"<{class_name}(" + ", ".join(f"{{self.{pk}}}" for pk in primary_key_fields) + ")>\"\n\n"
 
     return model_str
+
 
 def generate_models():
     """
@@ -130,7 +129,8 @@ def generate_models():
         
         # Start with imports - note we removed relationship from imports
         content = '''"""Auto-generated models. Do not edit manually."""
-
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
 from .base import Base
 

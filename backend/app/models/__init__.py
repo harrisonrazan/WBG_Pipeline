@@ -6,9 +6,17 @@ try:
     from .generated import *
 except ImportError:
     # If models haven't been generated yet, provide placeholder classes
-    Project = None
-    CreditStatement = None
-    ContractAward = None
-
+    WbProjectFinancers = None
+    WbCreditStatements = None
+    WbTrustFundCommitments = None
+    WbCorporateProcurementContractAwards = None
+    WbLoanStatements = None
+    WbProcurementNotices = None
+    WbFinancialIntermediaryFundsContributions = None
+    WbContractAwards = None
+    WbProjectGeoLocations = None
+    WbProjects = None
+    WbProjectThemes = None
+    WbProjectSectors = None
 # Import any custom extensions
 from .extensions import *

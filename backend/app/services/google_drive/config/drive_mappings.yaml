@@ -3,10 +3,6 @@
 #   folder_id: string   # Google Drive folder ID where the file should be uploaded
 #   filename: string    # Name of the file in Google Drive
 
-# "Madagascar/CASEF.sql":
-#   drive_path: "Madagascar/Reports"  # Will be created if doesn't exist
-#   filename: "CASEF_Results.xlsx"
-
 "Madagascar/contract_awards_country_distribution.sql":
   drive_path: "MADAGASCAR"
   filename: "Contract Awards Country Distribution.xlsx"
@@ -38,3 +34,11 @@
 "Madagascar/project_associated_cost_comparison.sql":
   drive_path: "MADAGASCAR"
   filename: "Project Associated Cost Comparison.xlsx"
+
+"Madagascar/trust_fund_commitments.sql":
+  drive_path: "MADAGASCAR"
+  filename: "Trust Fund Commitments.xlsx"
+
+"Madagascar/FIF_contributions.sql":
+  drive_path: "MADAGASCAR"
+  filename: "FIF Contributions.xlsx"
