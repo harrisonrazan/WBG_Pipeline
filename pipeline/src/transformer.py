@@ -14,6 +14,7 @@ def process_api_call_json(data: List[Dict[str, Any]], api_endpoint: str) -> pd.D
     try:
         logger.info(f"Processing {api_endpoint} data...")
         df = pd.DataFrame(data)
+        df.columns = [standardize_column_name(col) for col in df.columns]
         if 'processed_at' not in df.columns and 'as_of_date' not in df.columns:
             df['as_of_date'] = datetime.now()
         return df

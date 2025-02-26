@@ -1,6 +1,5 @@
 # Makefile for managing the application lifecycle
-# The .PHONY declaration tells Make these are commands, not files
-.PHONY: help setup start stop restart build rebuild clean logs test upload-drive upload-casef upload-contracts
+.PHONY: help setup start stop restart build rebuild clean logs test upload-drive
 
 # Default target when just running 'make'
 help:
@@ -15,8 +14,6 @@ help:
 	@echo "  make clean    - Remove all containers, volumes, and build cache"
 	@echo "  make test     - Run tests across all services"
 	@echo "  make upload-drive [query=path/to/query.sql] - Upload query results to Drive"
-	@echo "  make upload-casef - Upload CASEF query results"
-	@echo "  make upload-contracts - Upload Contract Awards query results"
 
 # Initialize project setup
 setup:
@@ -73,15 +70,6 @@ else
 	@echo "Please specify a query path using query=path/to/query.sql"
 	docker compose exec backend python app/scripts/upload_to_drive.py
 endif
-
-# Specific query uploads
-upload-casef:
-	@echo "Uploading CASEF query results..."
-	docker compose exec backend python app/scripts/upload_to_drive.py "Madagascar/CASEF.sql"
-
-upload-contracts:
-	@echo "Uploading Contract Awards query results..."
-	docker compose exec backend python app/scripts/upload_to_drive.py "Madagascar/Contract Awards.sql"
 
 # Individual service commands
 .PHONY: backend frontend pipeline db

@@ -109,10 +109,6 @@ def fetch_wb_endppoints(endpoint_name: str) -> Dict[str, Any]:
     """Fetches all credit statement data"""
     return fetch_paginated_data(endpoint_name)
 
-# def fetch_contract_awards() -> Dict[str, Any]:
-#     """Fetches all contract awards data"""
-#     return fetch_paginated_data('contract_awards')
-
 
 def fetch_projects_excel(url: str, tmp_path: str = "/tmp") -> Optional[str]:
     """
