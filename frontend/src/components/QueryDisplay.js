@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
-import './QueryDisplay.css';
+import '../styles/components/QueryDisplay.css';
 
 const QueryDisplay = () => {
   const [queries, setQueries] = useState([]);
@@ -68,7 +68,6 @@ const QueryDisplay = () => {
   return (
     <div className="query-display">
       <div className="query-display-header">
-        <h2>World Bank Project Query Results</h2>
         <select
           value={selectedQuery}
           onChange={handleQueryChange}

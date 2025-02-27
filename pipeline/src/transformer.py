@@ -7,6 +7,8 @@ from datetime import datetime
 import re
 import logging
 from config import TABLES
+import csv
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -117,4 +119,29 @@ def process_projects_excel(file_path: str) -> Dict[str, pd.DataFrame]:
         
     except Exception as e:
         logging.error(f"Error processing projects Excel file: {str(e)}")
+        raise
+
+def process_gef_projects_csv(file_path: str) -> pd.DataFrame:
+    try:
+        # Read the CSV file, handling potential issues
+        df = pd.read_csv(
+            file_path,
+            # engine='python',           # Use more flexible parser
+            # encoding='utf-8-sig',      # Handle BOM if present
+            quoting=csv.QUOTE_MINIMAL, # Only quote when needed
+            # escapechar='\\',           # Define escape character
+            # skipinitialspace=True      # Skip spaces after delimiter
+        )
+        
+        logger.info("Successfully parsed GEF projects CSV file")
+        
+        # Standardize column names
+        df.columns = [standardize_column_name(col) for col in df.columns]
+        
+        if 'processed_at' not in df.columns and 'as_of_date' not in df.columns:
+            df['as_of_date'] = datetime.now()
+        
+        return df
+    except Exception as e:
+        logger.error(f"Error processing GEF projects CSV file: {str(e)}")
         raise

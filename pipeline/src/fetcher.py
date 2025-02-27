@@ -147,3 +147,26 @@ def fetch_projects_excel(url: str, tmp_path: str = "/tmp") -> Optional[str]:
     except Exception as e:
         logging.error(f"Error downloading projects file: {str(e)}")
         return None
+    
+def fetch_gef_projects_csv(csv_url: str, tmp_path: str = "/tmp") -> Optional[str]:
+    try:
+        response = requests.get(csv_url, stream=True)
+        response.raise_for_status()
+        
+        # Create temporary file path
+        file_path = os.path.join(tmp_path, "gef_projects.csv")
+        
+        # Ensure tmp directory exists
+        os.makedirs(tmp_path, exist_ok=True)
+        
+        # Write the file in chunks to handle large files efficiently
+        with open(file_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        
+        logging.info(f"Successfully downloaded GEF projects CSV file to {file_path}")
+        return file_path
+    except Exception as e:
+        logging.error(f"Error downloading GEF projects CSV file: {str(e)}")
+        return None

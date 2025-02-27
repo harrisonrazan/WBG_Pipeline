@@ -11,11 +11,13 @@ from dotenv import load_dotenv
 from config import TABLES, FETCH_INTERVAL, LOG_CONFIG, API_CONFIG
 from fetcher import (
     fetch_projects_excel,
-    fetch_wb_endppoints
+    fetch_wb_endppoints,
+    fetch_gef_projects_csv
 )
 from transformer import (
     process_projects_excel,  # Need to use this instead of process_projects_data
-    process_api_call_json
+    process_api_call_json,
+    process_gef_projects_csv
 )
 from loader import load_dataframe
 
@@ -43,10 +45,14 @@ def run_pipeline(engine):
         logger.info("Fetching data from World Bank APIs...")
         
         # Download and process the projects Excel file
-        logger.info("Fetching project excel data APIs...")
+        logger.info("Fetching WBG project excel data APIs...")
         projects_file = fetch_projects_excel(API_CONFIG['projects_url'])
         if not projects_file:
             raise ValueError("Failed to download projects Excel file")
+        
+        #Pull Gef data
+        logger.info("Fetching GEF CSV data...")
+        gef_file = fetch_gef_projects_csv(API_CONFIG['gef_projects_url'])
             
         # Fetch other data sources
         logger.info("Fetching Json Data APIs...")
@@ -62,10 +68,14 @@ def run_pipeline(engine):
                 raise ValueError("Failed to fetch data from one or more sources")
 
         # Process each dataset
-        logger.info("Processing project excel data...")
+        logger.info("Processing WBG project excel data...")
         project_dataframes = process_projects_excel(projects_file)
 
-        logger.info("Processing API data...")
+        # Process Gef data
+        logger.info("Processing GEF CSV data...")
+        project_dataframes['gef_projects'] = process_gef_projects_csv(gef_file)
+
+        logger.info("Processing WBG API data...")
         for table_name, data in api_json_data.items():
             if data and data.get('data'):
                 api_dataframes[table_name] = process_api_call_json(data['data'], table_name)
