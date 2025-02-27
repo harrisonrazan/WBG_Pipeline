@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
+import './QueryDisplay.css';
 
 const QueryDisplay = () => {
   const [queries, setQueries] = useState([]);
@@ -9,16 +10,14 @@ const QueryDisplay = () => {
   const [error, setError] = useState(null);
 
   const formatDisplayText = (text) => {
-    // Remove folder path and .sql extension
     const fileName = text.split('/').pop().replace(/\.sql$/, '');
-    // Replace underscores with spaces and capitalize each word
-    return fileName.split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    return fileName
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
 
   const formatColumnHeader = (header) => {
-    // Replace underscores with spaces
     return header.replace(/_/g, ' ');
   };
 
@@ -43,18 +42,12 @@ const QueryDisplay = () => {
     try {
       const response = await fetch('http://localhost:8000/execute_query', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query_path: queryPath
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query_path: queryPath }),
       });
-      
       if (!response.ok) {
         throw new Error('Failed to execute query');
       }
-      
       const data = await response.json();
       setQueryResults(data);
     } catch (err) {
@@ -73,75 +66,61 @@ const QueryDisplay = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900">
-      {/* Fixed Header Section */}
-      <div className="bg-gray-800 shadow-md p-4 flex-none border-b border-gray-700">
-        <h2 className="text-2xl font-bold mb-4 text-gray-100">World Bank Project Query Results</h2>
-        
+    <div className="query-display">
+      <div className="query-display-header">
+        <h2>World Bank Project Query Results</h2>
         <select
           value={selectedQuery}
           onChange={handleQueryChange}
-          className="w-full p-3 border rounded-lg bg-gray-700 text-gray-100 border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="query-select"
         >
           <option value="">Select a query to execute</option>
           {queries.map((query) => (
-            <option key={query} value={query} className="bg-gray-700">
+            <option key={query} value={query} className="query-option">
               {formatDisplayText(query)}
             </option>
           ))}
         </select>
 
-        {/* Error Display */}
         {error && (
-          <div className="mt-4 p-4 bg-red-900/50 border border-red-700 rounded-lg">
-            <div className="flex items-center gap-2 text-red-400">
-              <AlertCircle className="h-4 w-4" />
-              <span className="font-semibold">Error</span>
+          <div className="error-container">
+            <div className="error-title">
+              <AlertCircle className="error-icon" />
+              <span>Error</span>
             </div>
-            <p className="mt-1 text-red-300">{error}</p>
+            <p className="error-text">{error}</p>
           </div>
         )}
 
-        {/* Loading State */}
         {loading && (
-          <div className="mt-4 text-center">
-            <span className="text-gray-300">Loading...</span>
+          <div className="loading">
+            <span>Loading...</span>
           </div>
         )}
       </div>
 
-      {/* Scrollable Content Area */}
-      <div className="flex-grow overflow-hidden p-4 bg-gray-900">
+      <div className="query-display-content">
         {queryResults && !loading && (
-          <div className="h-full flex flex-col">
-            {/* Table Container */}
-            <div className="border border-gray-700 rounded-lg bg-gray-800 overflow-hidden flex-grow">
-              <div className="overflow-x-auto">
-                <div className="overflow-y-auto max-h-[calc(100vh-250px)]">
-                  <table className="min-w-full divide-y divide-gray-700">
-                    <thead className="bg-gray-800">
+          <div className="results-wrapper">
+            <div className="table-container">
+              <div className="table-x-scroll">
+                <div className="table-y-scroll">
+                  <table className="query-table">
+                    <thead>
                       <tr>
                         {queryResults.columns.map((column) => (
-                          <th
-                            key={column}
-                            className="sticky top-0 px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider bg-gray-800 whitespace-nowrap border-b border-gray-700"
-                          >
-                            {formatColumnHeader(column)}
-                          </th>
+                          <th key={column}>{formatColumnHeader(column)}</th>
                         ))}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-700">
+                    <tbody>
                       {queryResults.rows.map((row, rowIndex) => (
-                        <tr 
+                        <tr
                           key={rowIndex}
-                          className={rowIndex % 2 === 0 ? 'bg-gray-800' : 'bg-gray-900'}
+                          className={rowIndex % 2 === 0 ? 'table-row-even' : 'table-row-odd'}
                         >
                           {queryResults.columns.map((column) => (
-                            <td
-                              key={column}
-                              className="px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-center"
-                            >
+                            <td key={column}>
                               {row[column]?.toString() || ''}
                             </td>
                           ))}
@@ -152,9 +131,7 @@ const QueryDisplay = () => {
                 </div>
               </div>
             </div>
-            
-            {/* Results Summary */}
-            <div className="mt-4 text-sm text-gray-400">
+            <div className="results-summary">
               Total rows: {queryResults.total_rows}
             </div>
           </div>

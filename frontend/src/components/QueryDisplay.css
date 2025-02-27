@@ -1,0 +1,109 @@
+/* QueryDisplay.css */
+
+/* Root container for the QueryDisplay component */
+.query-display {
+    @apply h-screen flex flex-col bg-gray-900;
+  }
+  
+  /* Header section (fixed at the top) */
+  .query-display-header {
+    @apply bg-gray-800 shadow-md p-4 flex-none border-b border-gray-700;
+  }
+  
+  /* Header title */
+  .query-display-header h2 {
+    @apply text-2xl font-bold mb-4 text-gray-100;
+  }
+  
+  /* The select dropdown for queries */
+  .query-select {
+    @apply w-full p-3 border rounded-lg bg-gray-700 text-gray-100 border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  }
+  
+  /* Option style (if needed) */
+  .query-option {
+    @apply bg-gray-700;
+  }
+  
+  /* Error container styling */
+  .error-container {
+    @apply mt-4 p-4 bg-red-900/50 border border-red-700 rounded-lg;
+  }
+  
+  /* Error title styling (with icon) */
+  .error-title {
+    @apply flex items-center gap-2 text-red-400 font-semibold;
+  }
+  
+  /* Error text styling */
+  .error-text {
+    @apply mt-1 text-red-300;
+  }
+  
+  /* Loading message styling */
+  .loading {
+    @apply mt-4 text-center text-gray-300;
+  }
+  
+  /* Content area for query results */
+  .query-display-content {
+    @apply flex-grow overflow-hidden p-4 bg-gray-900;
+  }
+  
+  /* Wrapper for results */
+  .results-wrapper {
+    @apply h-full flex flex-col;
+  }
+  
+  /* Table container styling */
+  .table-container {
+    @apply border border-gray-700 rounded-lg bg-gray-800 overflow-hidden flex-grow;
+  }
+  
+  /* Horizontal scroll container */
+  .table-x-scroll {
+    @apply overflow-x-auto;
+  }
+  
+  /* Vertical scroll container */
+  .table-y-scroll {
+    @apply overflow-y-auto max-h-[calc(100vh-250px)];
+  }
+  
+  /* Table styling */
+  .query-table {
+    @apply min-w-full divide-y divide-gray-700;
+  }
+  
+  .query-table thead {
+    @apply bg-gray-800;
+  }
+  
+  .query-table th {
+    @apply sticky top-0 px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider bg-gray-800 whitespace-nowrap border-b border-gray-700;
+  }
+  
+  .query-table tbody {
+    @apply divide-y divide-gray-700;
+  }
+  
+  /* Even table row */
+  .table-row-even {
+    @apply bg-gray-800;
+  }
+  
+  /* Odd table row */
+  .table-row-odd {
+    @apply bg-gray-900;
+  }
+  
+  /* Table cell styling */
+  .query-table td {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-center;
+  }
+  
+  /* Results summary styling */
+  .results-summary {
+    @apply mt-4 text-sm text-gray-400;
+  }
+  

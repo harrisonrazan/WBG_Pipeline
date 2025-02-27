@@ -1,0 +1,21 @@
+FROM node:18
+
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package.json ./
+RUN npm install
+RUN npm install -D tailwindcss postcss autoprefixer lucide-react
+RUN npx tailwindcss init -p
+
+
+# Copy the rest of your source code
+COPY . .
+
+ENV HOST 0.0.0.0
+
+# Expose the port your dev server uses (typically 3000 for Create React App)
+EXPOSE 3000
+
+# Run the development server
+CMD ["npm", "start"]

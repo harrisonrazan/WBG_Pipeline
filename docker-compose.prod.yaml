@@ -4,21 +4,16 @@ services:
   frontend:
     build: 
       context: ./frontend
-      # dockerfile: Dockerfile #prod
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
-      # - "${FRONTEND_PORT:-3000}:80"
-      - "${FRONTEND_PORT:-3000}:3000" # for hot reload
+      - "${FRONTEND_PORT:-3000}:80"
     environment:
       - REACT_APP_API_URL=${API_URL:-http://localhost:8000}
       - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-      - CHOKIDAR_INTERVAL=10
-      - HOST=0.0.0.0
     volumes:
       - ./frontend:/app
       - /app/node_modules
-      # - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend
     networks:
