@@ -42,3 +42,7 @@
 "Madagascar/FIF_contributions.sql":
   drive_path: "MADAGASCAR"
   filename: "FIF Contributions.xlsx"
+
+"Madagascar/world_bank_GEF_project.sql":
+  drive_path: "MADAGASCAR"
+  filename: "GEF Projects involving Madagascar.xlsx"

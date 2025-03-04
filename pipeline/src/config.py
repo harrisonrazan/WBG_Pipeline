@@ -4,7 +4,7 @@
 # World Bank API configurations
 API_CONFIG = {
     'projects_url': 'https://search.worldbank.org/api/v3/projects/all.xlsx',
-    'gef_projects_url': 'https://www.thegef.org/sites/default/files/views_data_export/projects_data_export_1/1740678689/projects.csv',
+    'gef_projects_url': 'https://www.thegef.org/sites/default/files/views_data_export/projects_data_export_1/1741029021/projects.csv',
     'base_url': 'https://datacatalogapi.worldbank.org/dexapps/fone/api/apiservice',
     'endpoints': {
         'credit_statements': {
