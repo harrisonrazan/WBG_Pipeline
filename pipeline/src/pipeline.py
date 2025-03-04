@@ -17,7 +17,7 @@ from fetcher import (
     fetch_gef_projects_csv
 )
 from transformer import (
-    process_projects_excel,
+    process_projects_excel_concurrently,
     # process_api_call_json,
     process_gef_projects_csv
 )
@@ -160,7 +160,7 @@ def run_pipeline(engine):
             
         # Process Excel file (CPU intensive)
         logger.info("Processing WBG project excel data...")
-        project_dataframes = process_projects_excel(projects_file)
+        project_dataframes = process_projects_excel_concurrently(projects_file)
         
         # Process GEF data
         logger.info("Processing GEF CSV data...")
