@@ -16,8 +16,11 @@
   filename: "Credit Statements.xlsx"
 
 "Madagascar/projects_list.sql":
-  drive_path: "MADAGASCAR"
+  drive_path: "TMP"
   filename: "Project List.xlsx"
+# "Madagascar/projects_list.sql":
+#   drive_path: "MADAGASCAR"
+#   filename: "Project List.xlsx"
 
 "Madagascar/UN_organizations.sql":
   drive_path: "MADAGASCAR"

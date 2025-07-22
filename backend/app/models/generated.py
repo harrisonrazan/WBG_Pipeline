@@ -104,31 +104,124 @@ class WbProjectFinancers(Base):
     def __repr__(self):
         return f"<WbProjectFinancers({self.project}, {self.financer_id})>"
 
-class GefProjects(Base):
-    """SQLAlchemy model for the gef_projects table.""" 
-    __tablename__ = 'gef_projects'
+class WbCorporateProcurementContractAwards(Base):
+    """SQLAlchemy model for the wb_corporate_procurement_contract_awards table.""" 
+    __tablename__ = 'wb_corporate_procurement_contract_awards'
 
-    title = Column('title', String)
-    id = Column('id', String)
-    countries = Column('countries', String)
-    focal_areas = Column('focal_areas', String)
-    type = Column('type', String)
-    agencies = Column('agencies', String)
-    gef_grant = Column('gef_grant', String)
-    cofinancing = Column('cofinancing', String)
-    status = Column('status', String)
-    approval_fy = Column('approval_fy', String)
-    funding_source_indexed_field = Column('funding_source_indexed_field', String)
-    non_grant_instrument_indexed_field = Column('non_grant_instrument_indexed_field', String)
-    capacity_building_initiative_for_transparency = Column('capacity_building_initiative_for_transparency', String)
-    gef_period = Column('gef_period', String)
+    award_date = Column('award_date', String)
+    commodity_category = Column('commodity_category', String)
+    contract_award_amount = Column('contract_award_amount', String)
+    contract_description = Column('contract_description', String)
+    fund_source = Column('fund_source', String)
+    quarter_and_fiscal_year = Column('quarter_and_fiscal_year', String)
+    selection_number = Column('selection_number', String)
+    supplier = Column('supplier', String)
+    supplier_country = Column('supplier_country', String)
+    supplier_country_code = Column('supplier_country_code', String)
+    vpu_description = Column('vpu_description', String)
+    wbg_organization = Column('wbg_organization', String)
     as_of_date = Column('as_of_date', DateTime)
 
     # Synthetic primary key added because none were found
     synthetic_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     def __repr__(self):
-        return f"<GefProjects()>"
+        return f"<WbCorporateProcurementContractAwards()>"
+
+class WbFinancialIntermediaryFundsContributions(Base):
+    """SQLAlchemy model for the wb_financial_intermediary_funds_contributions table.""" 
+    __tablename__ = 'wb_financial_intermediary_funds_contributions'
+
+    as_of_date = Column('as_of_date', String)
+    fund_name = Column('fund_name', String)
+    donor_name = Column('donor_name', String)
+    donor_country_code = Column('donor_country_code', String)
+    receipt_type = Column('receipt_type', String)
+    receipt_quarter = Column('receipt_quarter', String)
+    calendar_year = Column('calendar_year', String)
+    receipt_currency = Column('receipt_currency', String)
+    receipt_amount = Column('receipt_amount', String)
+    contribution_type = Column('contribution_type', String)
+    sub_account = Column('sub_account', String)
+    amount_in_usd = Column('amount_in_usd', String)
+    sectortheme = Column('sectortheme', String)
+
+    # Synthetic primary key added because none were found
+    synthetic_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    def __repr__(self):
+        return f"<WbFinancialIntermediaryFundsContributions()>"
+
+class WbNetFlowsAndCommitments(Base):
+    """SQLAlchemy model for the wb_net_flows_and_commitments table.""" 
+    __tablename__ = 'wb_net_flows_and_commitments'
+
+    country = Column('country', String)
+    fees_us = Column('fees_us', String)
+    financier = Column('financier', String)
+    fiscal_year = Column('fiscal_year', String)
+    gross_disbursement_us = Column('gross_disbursement_us', String)
+    ibrd_commitments_us = Column('ibrd_commitments_us', String)
+    ida_concessional_commitments_us = Column('ida_concessional_commitments_us', String)
+    ida_grant_commitments_us = Column('ida_grant_commitments_us', String)
+    ida_nonconcessional_commitments_us = Column('ida_nonconcessional_commitments_us', String)
+    ida_other_commitments_us = Column('ida_other_commitments_us', String)
+    interest_us = Column('interest_us', String)
+    net_disbursement_us = Column('net_disbursement_us', String)
+    region = Column('region', String)
+    repayments_us = Column('repayments_us', String)
+    as_of_date = Column('as_of_date', DateTime)
+
+    # Synthetic primary key added because none were found
+    synthetic_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    def __repr__(self):
+        return f"<WbNetFlowsAndCommitments()>"
+
+class WbLoanStatements(Base):
+    """SQLAlchemy model for the wb_loan_statements table.""" 
+    __tablename__ = 'wb_loan_statements'
+
+    agreement_signing_date = Column('agreement_signing_date', String)
+    board_approval_date = Column('board_approval_date', String)
+    borrower = Column('borrower', String)
+    borrowers_obligation = Column('borrowers_obligation', String)
+    cancelled_amount = Column('cancelled_amount', String)
+    closed_date_most_recent = Column('closed_date_most_recent', String)
+    country = Column('country', String)
+    country_code = Column('country_code', String)
+    currency_of_commitment = Column('currency_of_commitment', String)
+    disbursed_amount = Column('disbursed_amount', String)
+    due_3rd_party = Column('due_3rd_party', String)
+    due_to_ibrd = Column('due_to_ibrd', String)
+    effective_date_most_recent = Column('effective_date_most_recent', String)
+    end_of_period = Column('end_of_period', String)
+    exchange_adjustment = Column('exchange_adjustment', String)
+    first_repayment_date = Column('first_repayment_date', String)
+    guarantor = Column('guarantor', String)
+    guarantor_country_code = Column('guarantor_country_code', String)
+    interest_rate = Column('interest_rate', String)
+    last_disbursement_date = Column('last_disbursement_date', String)
+    last_repayment_date = Column('last_repayment_date', String)
+    loan_number = Column('loan_number', String)
+    loan_status = Column('loan_status', String)
+    loan_type = Column('loan_type', String)
+    loans_held = Column('loans_held', String)
+    original_principal_amount = Column('original_principal_amount', String)
+    project_id = Column('project_id', String)
+    project_name = Column('project_name', String)
+    region = Column('region', String)
+    repaid_3rd_party = Column('repaid_3rd_party', String)
+    repaid_to_ibrd = Column('repaid_to_ibrd', String)
+    sold_3rd_party = Column('sold_3rd_party', String)
+    undisbursed_amount = Column('undisbursed_amount', String)
+    as_of_date = Column('as_of_date', DateTime)
+
+    # Synthetic primary key added because none were found
+    synthetic_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    def __repr__(self):
+        return f"<WbLoanStatements()>"
 
 class WbCreditStatements(Base):
     """SQLAlchemy model for the wb_credit_statements table.""" 
@@ -192,75 +285,6 @@ class WbTrustFundCommitments(Base):
     def __repr__(self):
         return f"<WbTrustFundCommitments()>"
 
-class WbCorporateProcurementContractAwards(Base):
-    """SQLAlchemy model for the wb_corporate_procurement_contract_awards table.""" 
-    __tablename__ = 'wb_corporate_procurement_contract_awards'
-
-    award_date = Column('award_date', String)
-    commodity_category = Column('commodity_category', String)
-    contract_award_amount = Column('contract_award_amount', String)
-    contract_description = Column('contract_description', String)
-    fund_source = Column('fund_source', String)
-    quarter_and_fiscal_year = Column('quarter_and_fiscal_year', String)
-    selection_number = Column('selection_number', String)
-    supplier = Column('supplier', String)
-    supplier_country = Column('supplier_country', String)
-    supplier_country_code = Column('supplier_country_code', String)
-    vpu_description = Column('vpu_description', String)
-    wbg_organization = Column('wbg_organization', String)
-    as_of_date = Column('as_of_date', DateTime)
-
-    # Synthetic primary key added because none were found
-    synthetic_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-
-    def __repr__(self):
-        return f"<WbCorporateProcurementContractAwards()>"
-
-class WbLoanStatements(Base):
-    """SQLAlchemy model for the wb_loan_statements table.""" 
-    __tablename__ = 'wb_loan_statements'
-
-    agreement_signing_date = Column('agreement_signing_date', String)
-    board_approval_date = Column('board_approval_date', String)
-    borrower = Column('borrower', String)
-    borrowers_obligation = Column('borrowers_obligation', String)
-    cancelled_amount = Column('cancelled_amount', String)
-    closed_date_most_recent = Column('closed_date_most_recent', String)
-    country = Column('country', String)
-    country_code = Column('country_code', String)
-    currency_of_commitment = Column('currency_of_commitment', String)
-    disbursed_amount = Column('disbursed_amount', String)
-    due_3rd_party = Column('due_3rd_party', String)
-    due_to_ibrd = Column('due_to_ibrd', String)
-    effective_date_most_recent = Column('effective_date_most_recent', String)
-    end_of_period = Column('end_of_period', String)
-    exchange_adjustment = Column('exchange_adjustment', String)
-    first_repayment_date = Column('first_repayment_date', String)
-    guarantor = Column('guarantor', String)
-    guarantor_country_code = Column('guarantor_country_code', String)
-    interest_rate = Column('interest_rate', String)
-    last_disbursement_date = Column('last_disbursement_date', String)
-    last_repayment_date = Column('last_repayment_date', String)
-    loan_number = Column('loan_number', String)
-    loan_status = Column('loan_status', String)
-    loan_type = Column('loan_type', String)
-    loans_held = Column('loans_held', String)
-    original_principal_amount = Column('original_principal_amount', String)
-    project_id = Column('project_id', String)
-    project_name = Column('project_name', String)
-    region = Column('region', String)
-    repaid_3rd_party = Column('repaid_3rd_party', String)
-    repaid_to_ibrd = Column('repaid_to_ibrd', String)
-    sold_3rd_party = Column('sold_3rd_party', String)
-    undisbursed_amount = Column('undisbursed_amount', String)
-    as_of_date = Column('as_of_date', DateTime)
-
-    # Synthetic primary key added because none were found
-    synthetic_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-
-    def __repr__(self):
-        return f"<WbLoanStatements()>"
-
 class WbProcurementNotices(Base):
     """SQLAlchemy model for the wb_procurement_notices table.""" 
     __tablename__ = 'wb_procurement_notices'
@@ -285,30 +309,6 @@ class WbProcurementNotices(Base):
 
     def __repr__(self):
         return f"<WbProcurementNotices()>"
-
-class WbFinancialIntermediaryFundsContributions(Base):
-    """SQLAlchemy model for the wb_financial_intermediary_funds_contributions table.""" 
-    __tablename__ = 'wb_financial_intermediary_funds_contributions'
-
-    as_of_date = Column('as_of_date', String)
-    fund_name = Column('fund_name', String)
-    donor_name = Column('donor_name', String)
-    donor_country_code = Column('donor_country_code', String)
-    receipt_type = Column('receipt_type', String)
-    receipt_quarter = Column('receipt_quarter', String)
-    calendar_year = Column('calendar_year', String)
-    receipt_currency = Column('receipt_currency', String)
-    receipt_amount = Column('receipt_amount', String)
-    contribution_type = Column('contribution_type', String)
-    sub_account = Column('sub_account', String)
-    amount_in_usd = Column('amount_in_usd', String)
-    sectortheme = Column('sectortheme', String)
-
-    # Synthetic primary key added because none were found
-    synthetic_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-
-    def __repr__(self):
-        return f"<WbFinancialIntermediaryFundsContributions()>"
 
 class WbContractAwards(Base):
     """SQLAlchemy model for the wb_contract_awards table.""" 
