@@ -182,101 +182,101 @@ def process_projects_excel_concurrently(file_path):
         logging.error(f"Error in concurrent Excel processing: {str(e)}")
         raise
     
-# def process_projects_excel(file_path: str) -> Dict[str, pd.DataFrame]:
-#     """
-#     Processes the World Bank projects Excel file into multiple DataFrames.
-#     Preserves hyperlinks in the project_id column.
-#     """
-#     try:
-#         # Read all sheets from Excel file
-#         sheet_names = ['World Bank Projects', 'Themes', 'Sectors',
-#                       'GEO Locations', 'Financers']
+def process_projects_excel(file_path: str) -> Dict[str, pd.DataFrame]:
+    """
+    Processes the World Bank projects Excel file into multiple DataFrames.
+    Preserves hyperlinks in the project_id column.
+    """
+    try:
+        # Read all sheets from Excel file
+        sheet_names = ['World Bank Projects', 'Themes', 'Sectors',
+                      'GEO Locations', 'Financers']
        
-#         dataframes = {}
+        dataframes = {}
         
-#         # Load the workbook using openpyxl to access hyperlinks
-#         import openpyxl
-#         workbook = openpyxl.load_workbook(file_path)
+        # Load the workbook using openpyxl to access hyperlinks
+        import openpyxl
+        workbook = openpyxl.load_workbook(file_path)
        
-#         for sheet_name in sheet_names:
-#             # For World Bank Projects sheet, skip rows 0 and 2 (indices)
-#             # For all other sheets, skip only row 0
-#             skiprows = [0, 2] if sheet_name == 'World Bank Projects' else [0]
+        for sheet_name in sheet_names:
+            # For World Bank Projects sheet, skip rows 0 and 2 (indices)
+            # For all other sheets, skip only row 0
+            skiprows = [0, 2] if sheet_name == 'World Bank Projects' else [0]
            
-#             # Read the Excel sheet with pandas, skipping specified rows
-#             df = pd.read_excel(
-#                 file_path,
-#                 sheet_name=sheet_name,
-#                 skiprows=skiprows
-#             )
+            # Read the Excel sheet with pandas, skipping specified rows
+            df = pd.read_excel(
+                file_path,
+                sheet_name=sheet_name,
+                skiprows=skiprows
+            )
            
-#             # Standardize column names
-#             df.columns = [standardize_column_name(col) for col in df.columns]
+            # Standardize column names
+            df.columns = [standardize_column_name(col) for col in df.columns]
             
-#             # Get the actual sheet object from openpyxl
-#             sheet = workbook[sheet_name]
+            # Get the actual sheet object from openpyxl
+            sheet = workbook[sheet_name]
             
-#             # Check if project_id or id column exists
-#             project_id_col = None
-#             for col in df.columns:
-#                 if col in ['project_id', 'id'] or 'project' in col and 'id' in col:
-#                     project_id_col = col
-#                     break
+            # Check if project_id or id column exists
+            project_id_col = None
+            for col in df.columns:
+                if col in ['project_id', 'id'] or 'project' in col and 'id' in col:
+                    project_id_col = col
+                    break
             
-#             # If we found a project ID column, extract hyperlinks
-#             if project_id_col is not None:
-#                 # Find the column index in the Excel sheet
-#                 col_idx = None
-#                 for i, col_name in enumerate(df.columns):
-#                     if col_name == project_id_col:
-#                         col_idx = i
-#                         break
+            # If we found a project ID column, extract hyperlinks
+            if project_id_col is not None:
+                # Find the column index in the Excel sheet
+                col_idx = None
+                for i, col_name in enumerate(df.columns):
+                    if col_name == project_id_col:
+                        col_idx = i
+                        break
                 
-#                 if col_idx is not None:
-#                     # Create a new column for URLs
-#                     url_col_name = f"{project_id_col}_url"
-#                     df[url_col_name] = None
+                if col_idx is not None:
+                    # Create a new column for URLs
+                    url_col_name = f"{project_id_col}_url"
+                    df[url_col_name] = None
                     
-#                     # Extract hyperlinks from each cell in the project_id column
-#                     # Add offset for skipped rows and header
-#                     row_offset = 1 + len(skiprows)
+                    # Extract hyperlinks from each cell in the project_id column
+                    # Add offset for skipped rows and header
+                    row_offset = 1 + len(skiprows)
                     
-#                     for excel_row_idx, df_row_idx in enumerate(range(len(df)), start=row_offset):
-#                         cell = sheet.cell(row=excel_row_idx, column=col_idx + 1)  # +1 because Excel is 1-indexed
-#                         if cell.hyperlink:
-#                             df.at[df_row_idx-1, url_col_name] = cell.hyperlink.target
+                    for excel_row_idx, df_row_idx in enumerate(range(len(df)), start=row_offset):
+                        cell = sheet.cell(row=excel_row_idx, column=col_idx + 1)  # +1 because Excel is 1-indexed
+                        if cell.hyperlink:
+                            df.at[df_row_idx-1, url_col_name] = cell.hyperlink.target
            
-#             # Convert date columns if present (using standardized column names)
-#             date_columns = [col for col in df.columns
-#                           if any(date_term in col
-#                                 for date_term in ['date', 'as_of'])]
-#             for col in date_columns:
-#                 df[col] = pd.to_datetime(df[col], errors='coerce')
+            # Convert date columns if present (using standardized column names)
+            date_columns = [col for col in df.columns
+                          if any(date_term in col
+                                for date_term in ['date', 'as_of'])]
+            for col in date_columns:
+                df[col] = pd.to_datetime(df[col], errors='coerce')
            
-#             # Convert numeric columns (using standardized column names)
-#             numeric_columns = [col for col in df.columns
-#                              if any(amount_term in col
-#                                    for amount_term in ['amount', 'cost', 'commitment'])]
-#             for col in numeric_columns:
-#                 # Convert string with commas to numeric
-#                 if df[col].dtype == object:  # Check if it's a string column
-#                     df[col] = df[col].astype(str).str.replace(',', '')
-#                 df[col] = pd.to_numeric(df[col], errors='coerce')
+            # Convert numeric columns (using standardized column names)
+            numeric_columns = [col for col in df.columns
+                             if any(amount_term in col
+                                   for amount_term in ['amount', 'cost', 'commitment'])]
+            for col in numeric_columns:
+                # Convert string with commas to numeric
+                if df[col].dtype == object:  # Check if it's a string column
+                    df[col] = df[col].astype(str).str.replace(',', '')
+                df[col] = pd.to_numeric(df[col], errors='coerce')
            
-#             # Store the DataFrame using the sheet name as key
-#             # Convert sheet name to lowercase and replace spaces with underscores
-#             sheet_key = standardize_column_name(sheet_name)
-#             if 'processed_at' not in df.columns and 'as_of_date' not in df.columns:
-#                 df['as_of_date'] = datetime.now()
-#             dataframes[sheet_key] = df
+            # Store the DataFrame using the sheet name as key
+            # Convert sheet name to lowercase and replace spaces with underscores
+            sheet_key = standardize_column_name(sheet_name)
+            if 'processed_at' not in df.columns and 'as_of_date' not in df.columns:
+                df['as_of_date'] = datetime.now()
+            dataframes[sheet_key] = df
            
-#             logging.info(f"Processed sheet '{sheet_name}' with {len(df)} rows")
-#             logging.debug(f"Standardized columns for '{sheet_name}': {list(df.columns)}")
+            logging.info(f"Processed sheet '{sheet_name}' with {len(df)} rows")
+            logging.debug(f"Standardized columns for '{sheet_name}': {list(df.columns)}")
        
-#         return dataframes
-#     except Exception as e:
-#         logging.error(f"Error processing Excel file: {str(e)}")
-#         raise
+        return dataframes
+    except Exception as e:
+        logging.error(f"Error processing Excel file: {str(e)}")
+        raise
 
 def process_gef_projects_csv(file_path: str) -> pd.DataFrame:
     try:

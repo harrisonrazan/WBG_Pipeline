@@ -4,7 +4,7 @@
 # World Bank API configurations
 API_CONFIG = {
     'projects_url': 'https://search.worldbank.org/api/v3/projects/all.xlsx',
-    'gef_projects_url': 'https://www.thegef.org/sites/default/files/views_data_export/projects_data_export_1/1741029021/projects.csv',
+    # 'gef_projects_url': 'https://www.thegef.org/sites/default/files/views_data_export/projects_data_export_1/1741625775/projects.csv',
     'base_url': 'https://datacatalogapi.worldbank.org/dexapps/fone/api/apiservice',
     'endpoints': {
         'credit_statements': {
@@ -34,6 +34,10 @@ API_CONFIG = {
         'contract_awards': {
             'dataset_id': 'DS00005',
             'resource_id': 'RS00005'
+        },
+        'net_flows_and_commitments': {
+            'dataset_id': 'DS00044',
+            'resource_id': 'RS00043'
         }
     },
     'max_retries': 3,
@@ -51,7 +55,7 @@ TABLES = {
     'sectors': 'wb_project_sectors',
     'geo_locations': 'wb_project_geo_locations',
     'financers': 'wb_project_financers',
-    'gef_projects': 'gef_projects',
+    # 'gef_projects': 'gef_projects',
     # api data
     'credit_statements': 'wb_credit_statements',
     'contract_awards': 'wb_contract_awards',
@@ -60,6 +64,7 @@ TABLES = {
     'loan_statements': 'wb_loan_statements',
     'procurement_notices': 'wb_procurement_notices',
     'financial_intermediary_funds_contributions': 'wb_financial_intermediary_funds_contributions',
+    'net_flows_and_commitments': 'wb_net_flows_and_commitments'
 }
 
 

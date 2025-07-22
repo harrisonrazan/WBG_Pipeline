@@ -69,6 +69,13 @@ services:
       - postgres
     networks:
       - app-network
+    shm_size: 2gb  # Increase shared memory for browser
+    deploy:
+      resources:
+        limits:
+          memory: 4G  # Limit memory to 4GB
+        reservations:
+          memory: 1G  # Reserve at least 1GB
 
 networks:
   app-network:

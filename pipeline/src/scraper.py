@@ -84,15 +84,15 @@ def cleanup_browsers():
 atexit.register(cleanup_browsers)
 
 # Handle signals for graceful termination
-def signal_handler(sig, frame):
-    """Handle termination signals by cleaning up browsers first."""
-    logger.info(f"Received signal {sig}, cleaning up...")
-    cleanup_browsers()
-    sys.exit(0)
+# def signal_handler(sig, frame):
+#     """Handle termination signals by cleaning up browsers first."""
+#     logger.info(f"Received signal {sig}, cleaning up...")
+#     cleanup_browsers()
+#     sys.exit(0)
 
-# Register signal handlers
-signal.signal(signal.SIGINT, signal_handler)
-signal.signal(signal.SIGTERM, signal_handler)
+# # Register signal handlers
+# signal.signal(signal.SIGINT, signal_handler)
+# signal.signal(signal.SIGTERM, signal_handler)
 
 async def fetch_with_pyppeteer(url, semaphore, timeout=45, retries=3):
     """Docker-optimized function to fetch URL content using pyppeteer."""

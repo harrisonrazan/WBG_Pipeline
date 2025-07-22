@@ -17,7 +17,8 @@ from fetcher import (
     fetch_gef_projects_csv
 )
 from transformer import (
-    process_projects_excel_concurrently,
+    # process_projects_excel_concurrently,
+    process_projects_excel,
     # process_api_call_json,
     process_gef_projects_csv
 )
@@ -144,8 +145,8 @@ def run_pipeline(engine):
             logger.info("Fetching WBG project excel data...")
             fetch_tasks['excel'] = executor.submit(fetch_projects_excel, API_CONFIG['projects_url'])
             
-            logger.info("Fetching GEF CSV data...")
-            fetch_tasks['gef'] = executor.submit(fetch_gef_projects_csv, API_CONFIG['gef_projects_url'])
+            # logger.info("Fetching GEF CSV data...")
+            # fetch_tasks['gef'] = executor.submit(fetch_gef_projects_csv, API_CONFIG['gef_projects_url'])
             
             # Fetch API data concurrently while Excel/CSV downloads
             logger.info("Fetching API data concurrently...")
@@ -153,76 +154,80 @@ def run_pipeline(engine):
             
             # Wait for Excel and GEF data to complete
             projects_file = fetch_tasks['excel'].result()
-            gef_file = fetch_tasks['gef'].result()
+            # gef_file = fetch_tasks['gef'].result()
         
         if not projects_file:
             raise ValueError("Failed to download projects Excel file")
             
         # Process Excel file (CPU intensive)
         logger.info("Processing WBG project excel data...")
-        project_dataframes = process_projects_excel_concurrently(projects_file)
+        project_dataframes = process_projects_excel(projects_file)
         
-        # Process GEF data
-        logger.info("Processing GEF CSV data...")
-        project_dataframes['gef_projects'] = process_gef_projects_csv(gef_file)
+        '''
+            # Process GEF data
+            # logger.info("Processing GEF CSV data...")
+            # project_dataframes['gef_projects'] = process_gef_projects_csv(gef_file)
+        '''
         
         # Process API data concurrently
         logger.info("Processing API data concurrently...")
         api_dataframes = transform_api_data_concurrently(api_json_data)
         
-       # Enrich world_bank_projects data with project relationship scraping
-        # if 'world_bank_projects' in project_dataframes:
-        #     try:
-        #         logger.info("Scraping project relationships (parent/associated projects)...")
-                
-        #         # Get project URLs or IDs
-        #         df = project_dataframes['world_bank_projects']
-                
-        #         # Explicitly add columns if they don't exist
-        #         if 'parent_project' not in df.columns:
-        #             df['parent_project'] = None
-        #         if 'associated_projects' not in df.columns:
-        #             df['associated_projects'] = "[]"
-                
-        #         # Start with a very small batch for testing
-        #         logger.info(f"Testing relationship scraping with a small sample...")
-        #         # Sample a small number of rows for initial testing
-        #         sample_size = min(10, len(df))
-        #         sample_df = df.sample(sample_size)
-                
-        #         # Try enrichment on the sample first
-        #         try:
-        #             enriched_sample = enrich_dataframe_with_relationships(
-        #                 sample_df,
-        #                 url_column='project_id_url',
-        #                 batch_size=2,  # Very small batch size for testing
-        #                 use_cache=True
-        #             )
-        #             logger.info(f"Sample enrichment successful, proceeding with full dataset")
+        '''
+            # Enrich world_bank_projects data with project relationship scraping
+            # if 'world_bank_projects' in project_dataframes:
+            #     try:
+            #         logger.info("Scraping project relationships (parent/associated projects)...")
                     
-        #             # If sample succeeded, enrich the full dataframe with conservative settings
-        #             enriched_df = enrich_dataframe_with_relationships(
-        #                 df,
-        #                 url_column='project_id_url',
-        #                 batch_size=3,  # Keep batch size small
-        #                 use_cache=True
-        #             )
+            #         # Get project URLs or IDs
+            #         df = project_dataframes['world_bank_projects']
                     
-        #             # Update the dataframe in the dictionary
-        #             project_dataframes['world_bank_projects'] = enriched_df
+            #         # Explicitly add columns if they don't exist
+            #         if 'parent_project' not in df.columns:
+            #             df['parent_project'] = None
+            #         if 'associated_projects' not in df.columns:
+            #             df['associated_projects'] = "[]"
                     
-        #         except Exception as e:
-        #             logger.error(f"Error in relationship scraping: {str(e)}")
-        #             logger.info("Continuing with pipeline without relationship enrichment")
-        #             # Keep the base dataframe with empty relationship columns
-        #             project_dataframes['world_bank_projects'] = df
-                
-        #         logger.info("Project relationship processing completed")
-        #     except Exception as e:
-        #         logger.error(f"Failed to process project relationships: {str(e)}")
-        #         logger.info("Continuing pipeline without relationship data")
-        # else:
-        #     logger.warning("world_bank_projects not found in processed data, skipping relationship scraping")
+            #         # Start with a very small batch for testing
+            #         logger.info(f"Testing relationship scraping with a small sample...")
+            #         # Sample a small number of rows for initial testing
+            #         sample_size = min(10, len(df))
+            #         sample_df = df.sample(sample_size)
+                    
+            #         # Try enrichment on the sample first
+            #         try:
+            #             enriched_sample = enrich_dataframe_with_relationships(
+            #                 sample_df,
+            #                 url_column='project_id_url',
+            #                 batch_size=2,  # Very small batch size for testing
+            #                 use_cache=True
+            #             )
+            #             logger.info(f"Sample enrichment successful, proceeding with full dataset")
+                        
+            #             # If sample succeeded, enrich the full dataframe with conservative settings
+            #             enriched_df = enrich_dataframe_with_relationships(
+            #                 df,
+            #                 url_column='project_id_url',
+            #                 batch_size=3,  # Keep batch size small
+            #                 use_cache=True
+            #             )
+                        
+            #             # Update the dataframe in the dictionary
+            #             project_dataframes['world_bank_projects'] = enriched_df
+                        
+            #         except Exception as e:
+            #             logger.error(f"Error in relationship scraping: {str(e)}")
+            #             logger.info("Continuing with pipeline without relationship enrichment")
+            #             # Keep the base dataframe with empty relationship columns
+            #             project_dataframes['world_bank_projects'] = df
+                    
+            #         logger.info("Project relationship processing completed")
+            #     except Exception as e:
+            #         logger.error(f"Failed to process project relationships: {str(e)}")
+            #         logger.info("Continuing pipeline without relationship data")
+            # else:
+            #     logger.warning("world_bank_projects not found in processed data, skipping relationship scraping")
+        '''
         
         # Load all dataframes concurrently
         all_dataframes = {**project_dataframes, **api_dataframes}
@@ -233,8 +238,8 @@ def run_pipeline(engine):
         try:
             os.remove(projects_file)
             logger.info("Cleaned up temporary Excel file")
-            os.remove(gef_file)
-            logger.info("Cleaned up temporary CSV file")
+            # os.remove(gef_file)
+            # logger.info("Cleaned up temporary CSV file")
         except Exception as e:
             logger.warning(f"Could not remove temporary files: {str(e)}")
         
